@@ -7,7 +7,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   target: 'static',
   head: {
-    titleTemplate: '%s - gama_produtos',
+    titleTemplate: 'Gerenciador de Produtos',
     title: 'gama_produtos',
     htmlAttrs: {
       lang: 'en'
