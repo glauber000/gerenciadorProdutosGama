@@ -159,9 +159,9 @@ export default ({
             ],
             cepRules: [
                 v => !!v || 'Cep é obrigatório',
+                v => v.length >= 9 || 'O Cep precisa conter ao menos 9 caracteres digite com o "-"',
                 v => /.+\d-.+\d.+/.test(v) || 'Cep Inválido',
                 v => v.length <= 9 || 'Cep não pode conter mais que 9 caracteres',
-                v => v.length >= 9 || 'O Cep precisa conter ao menos 9 caracteres digite com o "-"',
             ],
             logradouroRules: [
                 v => !!v || 'Logradouro é obrigatório',
