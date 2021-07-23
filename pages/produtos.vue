@@ -30,8 +30,8 @@
                     </v-col>
 
                     <v-col
-                    cols="12"
-                    md="4"
+                        cols="12"
+                        md="4"
                     >
                     <v-text-field
                         v-model="preco"
@@ -43,13 +43,35 @@
                     </v-col>
                 </v-row>
                 <v-btn
-                :disabled="!valid"
-                color="success"
-                class="mr-4"
-                @click="insereDados"
+                    :disabled="!valid"
+                    color="success"
+                    class="mr-4"
+                    @click="insereDados"
                 >
-                Salvar
+                    Salvar
                 </v-btn>
+                <v-overlay :value="overlay">
+                <v-progress-circular
+                    indeterminate
+                    size="64"
+                ></v-progress-circular>
+                </v-overlay>
+                <v-snackbar
+                    v-model="snackbar"
+                    >
+                    {{ text }}
+
+                    <template v-slot:action="{ attrs }">
+                        <v-btn
+                        color="pink"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                        >
+                        Close
+                        </v-btn>
+                    </template>
+                </v-snackbar>
             </v-container>
         </v-form>
         <tableproducts :prods="produtos"></tableproducts>
@@ -85,33 +107,51 @@ export default ({
             precoRules: [
                 v => !!v || 'Preço é obrigatório'                
             ],
+            overlay: false,
+            text: 'Dados Inseridos com sucesso!',
+            snackbar: false,
         }
     },
 
     methods:{
         async buscaDados(){
             try{
+                this.toggleOverlay();
                 const request = await this.$axios.get(this.url+'produtos');
                 this.produtos = request.data;
                 console.log(this.produtos)
             } catch{
                 console.log('Error');
+            } finally{
+                this.toggleOverlay();
             }
         },
 
         async insereDados(){
             try{
+                this.toggleOverlay();
                 const request = await this.$axios.post(this.url+'addProd',{nome: this.nome , validade: this.validade, preco: this.preco});
+                await this.buscaDados();
                 this.nome = '';
                 this.validade = '';
                 this.preco = '';
 
-                await this.buscaDados();
-                alert('Dados inseridos com sucesso!');
+                
+                this.toggleSnackbar();
             } catch{
                 console.log('Error')
+            }finally{
+                this.toggleOverlay();
             }
         },
+
+        toggleOverlay(){
+            this.overlay = !this.overlay;
+        },
+
+        toggleSnackbar(){
+            this.snackbar = !this.snackbar;
+        }
 
        
     },

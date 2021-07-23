@@ -122,6 +122,28 @@
                 >
                 Salvar
                 </v-btn>
+                <v-overlay :value="overlay">
+                <v-progress-circular
+                    indeterminate
+                    size="64"
+                ></v-progress-circular>
+                </v-overlay>
+                <v-snackbar
+                    v-model="snackbar"
+                    >
+                    {{ text }}
+
+                    <template v-slot:action="{ attrs }">
+                        <v-btn
+                        color="pink"
+                        text
+                        v-bind="attrs"
+                        @click="snackbar = false"
+                        >
+                        Close
+                        </v-btn>
+                    </template>
+                </v-snackbar>
             </v-container>
         </v-form>
         <tableclientes :cln="clientes"></tableclientes>
@@ -188,22 +210,30 @@ export default ({
                 v => v.length <= 10 || 'Número não pode conter mais que 10 caracteres',
                 v => /\d/.test(v) || 'Digite apenas números',
             ],
+            overlay: false,
+            snackbar: false,
+            text: 'Dados Inseridos com sucesso!'
         }
     },
 
     methods:{
         async buscaDados(){
             try{
+                this.toggleOverlay();
                 const request = await this.$axios.get(this.url+'clientes');
                 this.clientes = request.data;
             } catch{
                 console.log('Error');
+            } finally{
+                this.toggleOverlay();
             }
         },
 
         async insereDados(){
             try{
+                this.toggleOverlay();
                 const request = await this.$axios.post(this.url+'addClin',{nome: this.nome, idade: this.idade, endereco: this.endereco})
+                await this.buscaDados();
                 this.nome = '';
                 this.idade = '';
                 this.endereco.logradouro = '';
@@ -212,11 +242,11 @@ export default ({
                 this.endereco.numero = '';
                 this.endereco.cep = '';
                 this.endereco.bairro = '';
-
-                await this.buscaDados();
-                alert('Dados Inseridos com Sucesso!');
+                this.toggleSnackbar()
             } catch{
                 console.log('Error');
+            } finally{
+                this.toggleOverlay();
             }
         },
 
@@ -229,10 +259,17 @@ export default ({
                 this.endereco.cidade = dados.city;
                 this.endereco.uf = dados.state;
 
-                console.log(dados);
             } catch{
                 console.log('Error')
             }
+        },
+
+        toggleOverlay(){
+            this.overlay= !this.overlay;
+        },
+
+        toggleSnackbar(){
+            this.snackbar = !this.snackbar;
         }
     },
 
