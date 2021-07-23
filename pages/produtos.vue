@@ -37,6 +37,7 @@
                         v-model="preco"
                         :rules="precoRules"
                         label="Preço"
+                        type="number"
                         required
                     ></v-text-field>
                     </v-col>
@@ -82,7 +83,7 @@ export default ({
             ],
             preco: '',
             precoRules: [
-                v => !!v || 'Preço é obrigatório'
+                v => !!v || 'Preço é obrigatório'                
             ],
         }
     },
