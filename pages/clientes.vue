@@ -26,6 +26,7 @@
                         :counter="3"
                         label="Idade"
                         required
+                        type="number"
                     ></v-text-field>
                     </v-col>
 
@@ -104,6 +105,7 @@
                         v-model="endereco.numero"
                         :rules="numeroRules"
                         :counter="10"
+                        type="number"
                         label="Número"
                         required
                     ></v-text-field>
