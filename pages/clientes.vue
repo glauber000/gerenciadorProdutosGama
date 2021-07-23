@@ -37,8 +37,11 @@
                     <v-text-field
                         v-model="endereco.cep"
                         :rules="cepRules"
-                        :counter="9"
+                        :counter="8"
                         label="Cep"
+                        type="number"
+                        @blur="consultaCep"
+                        @keyup.enter="consultaCep"
                         required
                     ></v-text-field>
                     </v-col>
@@ -140,6 +143,7 @@ export default ({
         return{
             clientes: null,
             url: "https://apiproductsgama.herokuapp.com/",
+            url2: "https://brasilapi.com.br/api/cep/v1/",
             nome: '',
             idade: '',
             endereco:{
@@ -161,9 +165,7 @@ export default ({
             ],
             cepRules: [
                 v => !!v || 'Cep é obrigatório',
-                v => v.length >= 9 || 'O Cep precisa conter ao menos 9 caracteres digite com o "-"',
-                v => /.+\d-.+\d.+/.test(v) || 'Cep Inválido',
-                v => v.length <= 9 || 'Cep não pode conter mais que 9 caracteres',
+                v => v.length <= 8 || 'Cep não pode conter mais que 8 caracteres',
             ],
             logradouroRules: [
                 v => !!v || 'Logradouro é obrigatório',
@@ -215,6 +217,21 @@ export default ({
                 alert('Dados Inseridos com Sucesso!');
             } catch{
                 console.log('Error');
+            }
+        },
+
+        async consultaCep(){
+            try{
+                const request = await this.$axios.get(this.url2+this.endereco.cep);
+                const dados = request.data;
+                this.endereco.logradouro = dados.street;
+                this.endereco.bairro = dados.neighborhood;
+                this.endereco.cidade = dados.city;
+                this.endereco.uf = dados.state;
+
+                console.log(dados);
+            } catch{
+                console.log('Error')
             }
         }
     },
