@@ -1,6 +1,6 @@
 <template>
     <div>
-        <v-form v-model="valid">
+        <v-form ref="form" v-model="valid">
             <v-container>
                 <v-row>
                     <v-col
@@ -142,6 +142,7 @@ export default ({
                 console.log('Error')
             }finally{
                 this.toggleOverlay();
+                this.$refs.form.resetValidation();
             }
         },
 
