@@ -252,6 +252,7 @@ export default ({
 
         async consultaCep(){
             try{
+                this.toggleOverlay();
                 const request = await this.$axios.get(this.url2+this.endereco.cep);
                 const dados = request.data;
                 this.endereco.logradouro = dados.street;
@@ -261,6 +262,8 @@ export default ({
 
             } catch{
                 console.log('Error')
+            } finally{
+                this.toggleOverlay();
             }
         },
 
